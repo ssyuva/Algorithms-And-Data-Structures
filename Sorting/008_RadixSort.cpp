@@ -47,8 +47,14 @@ int main()
 //Worst case	- 
 //Space complexity -
 
-//
-//
+// 1) Find the largest number
+// 2) Find the number of digits in the larges number
+// 3) Prefix the smaller numbers iwth zeroes and make all the numbers have same number of digits
+// 4) Create N baskets where N is the base of the numbers
+// 5) Start from the least significant digit and put the numbers in appropriate digit basket
+// 6) Extract the numbers from the digit buckets and reconstruct the master list of numbers
+// 7) Do steps 5 to 6 for all digits
+// 8) Extract the final sorted list from the master list.
 
 
 void radix_sort(int dt[], int size) {	
