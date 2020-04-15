@@ -42,10 +42,8 @@ int main()
 
 
 //Radix sort 
-//Best case 	- 
-//Average case 	- 
-//Worst case	- 
-//Space complexity -
+//Average case 	- O( d * (n + b) ) where d is the number of digits, n is the number of number, b is the base
+//Space complexity - O(n)
 
 // 1) Find the largest number
 // 2) Find the number of digits in the larges number
