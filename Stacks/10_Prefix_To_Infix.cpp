@@ -1,4 +1,4 @@
-//Convert postfix expression to infix expression
+//Convert prefix expression to infix expression
 //Author: Yuvaraja Subramaniam
 
 #include <iostream>
@@ -11,23 +11,23 @@
 using namespace std;
 
 
-string postfix_to_infix(string pexp);
+string prefix_to_infix(string pexp);
 
 
 int main () {
 
-	cout << "             CONVERSION OF POSTFIX EXPRESSION TO INFIX               " << endl;
+	cout << "              CONVERSION OF PREFIX EXPRESSION TO INFIX               " << endl;
 	cout << "---------------------------------------------------------------------" << endl;
 
-	vector<string> postfixexprs = {
-	                             	"32^6/43*2+-",
-									"322**232+^+"
+	vector<string> prefixexprs = {
+	                             	"-+2*34/6^23",
+									"+^+232**223"
 	                             };
 
-	for(string & pexp : postfixexprs) {
+	for(string & pexp : prefixexprs) {
 
 		cout << "Conversing expression : " << pexp  << endl;
-		string result = postfix_to_infix(pexp);
+		string result = prefix_to_infix(pexp);
 		cout << "Result                : " << result << endl;
 	    cout << "---------------------------------------------------------------------" << endl;
 		cout << endl;
@@ -36,22 +36,22 @@ int main () {
 
 
 
-//convert postfix expression to infix
+//convert prefix expression to infix
 /* 
-	1. The postfix expression needs to be scanned from the front (left to right)
+	1. The prefix expression needs to be scanned from reverse end (right to left)
 	2. If the incoming char is an operand, push on stack
 	3. If the incoming char is an operator, the corresponding operands will the top two elements of the stack. Pop the 
        top two operands from the stack, construct the infix sub-expression and push the infix expression into the stack.
-	4. Keep scanning the expression until the end is reached. When the expression conversion is complete, there should 
+	4. Keep scanning the expression until the start is reached. When the expression conversion is complete, there should 
 	   be only one element in the stack which should be the converted infix expression
 */
 
-string postfix_to_infix(string pexp) {
+string prefix_to_infix(string pexp) {
 
 	stack<string> stk;
 
 	//scan the expression from front to back
-	for (int i =  0; i <pexp.length(); i++) {
+	for (int i =  pexp.length()-1; i >= 0; i--) {
 		char inchar = pexp[i];
 	
 		if ( isspace(inchar) ) {
@@ -62,10 +62,10 @@ string postfix_to_infix(string pexp) {
 			//incoming operator
 			char operatr  = inchar;
 
-			string operand_2 = stk.top(); 
+			string operand_1 = stk.top(); 
 			stk.pop();
 
-			string operand_1 = stk.top();
+			string operand_2 = stk.top();
 			stk.pop();
 
 			string infix;
