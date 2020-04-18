@@ -50,7 +50,7 @@ int evaluate_postfix_exp_stack(string pexp) {
 
 	stack<int> stk;
 
-	//scan the expression in reverse and start evaluating
+	//scan the expression left to right and start evaluating
 	for (int i =  0; i <pexp.length(); i++) {
 		char inchar = pexp[i];
 	
