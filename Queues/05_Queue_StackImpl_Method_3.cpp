@@ -17,7 +17,8 @@
 	Method 2: enqueue - O(n), dequeue - O(1)
 	Method 3: average timecomplexity of O(n/2) for both enqueue and dequeue operations
 
-	This program implements method 2
+	This program implements method 3. This method uses two stack and tracks the active stack to achive equal 
+	average time complexity for enqueue(), deque()
 	
 */
 
@@ -29,6 +30,11 @@ using namespace std;
 stack<int> stk_1;
 stack<int> stk_2;
 
+const int s1 = 1;
+const int s2 = 2;
+
+int active_stack  = s1;
+int support_stack = s2;
 
 //prototypes
 bool enqueue(int element) ;
@@ -38,7 +44,7 @@ void display() ;
 bool isempty() ;
 
 int main() {
-	cout << "     IMPLEMENTATION OF QUEUE USING STACKS METHOD 2. enque = O(n). dequeue = O(1)    " << endl;
+	cout << "     IMPLEMENTATION OF QUEUE USING STACKS METHOD 3. avg enque / dequeue = O(n)      " << endl;
 	cout << "------------------------------------------------------------------------------------" << endl;
 
 	char choice;
@@ -51,6 +57,8 @@ int main() {
 		cout <<" d) Display" 	<< endl;
 		cout <<" e) Is empty?" 	<< endl;
 		cout <<" q) Quit" 		<< endl;
+
+		cout << "Active Stack = " << active_stack << endl;
 
 		cout << endl;
 		cout << "Enter choice : ";
@@ -100,68 +108,86 @@ int main() {
 //Enqueue
 bool enqueue(int element) {
 
-	while( ! stk_2.empty() ) {
-		stk_1.push( stk_2.top() );
-		stk_2.pop();
+	if (s1 == active_stack) {
+		stk_1.push(element);
 	}
-
-	stk_1.push(element);
-
-	while( ! stk_1.empty() ) {
-		stk_2.push( stk_1.top() );
-		stk_1.pop();
+	else {
+		while( ! stk_2.empty() ) {
+			stk_1.push( stk_2.top() );
+			stk_2.pop();
+		}
+		stk_1.push(element);
+		active_stack = s1;
 	}
-
 	return true;
 }
 
 //Dequeue
 int dequeue() {
-	if ( 0 == stk_2.size() ) {
+	if ( ( s1 == active_stack and 0 == stk_1.size() ) or (s2 == active_stack and 0 == stk_2.size() ) ) {
 		cout << "queue empty.." << endl;
 		return -1;
 	}
 
+	if ( s1 == active_stack ) {
+
+		while ( ! stk_1.empty() ) {
+			stk_2.push( stk_1.top() );
+			stk_1.pop();
+		}
+		active_stack = s2;
+	}
+
 	int dequed_element = stk_2.top();
 	stk_2.pop();
+
 	return dequed_element;
 }
 
 //Front / Peek
 int peek() {
-	if ( 0 == stk_2.size() ) {
+	if ( ( s1 == active_stack and 0 == stk_1.size() ) or (s2 == active_stack and 0 == stk_2.size() ) ) {
 		cout << "queue empty.." << endl;
 		return -1;
 	}
 
-	int front_element = stk_2.top();
-	return front_element;
+	if ( s1 == active_stack ) {
+
+		while ( ! stk_1.empty() ) {
+			stk_2.push( stk_1.top() );
+			stk_1.pop();
+		}
+		active_stack = s2;
+	}
+	return stk_2.top();
 }
 
 
 //Display
 void display() {
-	if ( 0 == stk_2.size() ) {
+	if ( ( s1 == active_stack and 0 == stk_1.size() ) or (s2 == active_stack and 0 == stk_2.size() ) ) {
 		cout << "queue empty.." << endl;
 		return;
 	}
 	cout << "Queue contents : ";
-	while( ! stk_2.empty() ) {
 
-		int element = stk_2.top();
+	if (s1 == active_stack) {
+		while ( ! stk_1.empty() ) {
+			stk_2.push( stk_1.top() );
+			stk_1.pop();
+		}
+	}
+
+	while ( ! stk_2.empty() ) {
+		cout << stk_2.top() << " ";
+		stk_1.push(stk_2.top());
 		stk_2.pop();
-		cout << element << " ";
-		stk_1.push( element );
 	}
 	cout << endl;
-
-	while( ! stk_1.empty() ) {
-		stk_2.push( stk_1.top() );
-		stk_1.pop();
-	}
+	active_stack = s1;
 }
 
 //Is queue empty
 bool isempty() {
-	return stk_2.empty();
+	return ( s1 == active_stack and 0 == stk_1.size() ) or (s2 == active_stack and 0 == stk_2.size() );
 }
