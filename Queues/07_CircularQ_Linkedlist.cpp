@@ -1,4 +1,4 @@
-//Implementation of Cirucular queue using arrays
+//Implementation of Cirucular queue using linked list
 //Author: Yuvaraja Subramaniam ( www.linkedin.com/in/yuvaraja )
 
 /*  Circular queue fixes the issue of linear queue showing up as full when the rear pointer is
@@ -19,12 +19,14 @@
 
 using namespace std;
 
-const int qsize = 8;
+struct Node {
+	int data;
+	struct Node *next;
+};
 
-int circularQ[qsize];
-
-int front = -1; //front and rear are at -1 at the start
-int rear  = -1;
+//initially front = rear = NULL
+Node *front = nullptr;
+Node *rear  = nullptr;
 
 
 //prototypes
@@ -33,10 +35,9 @@ int  dequeue() ;
 int  peek() ;
 void display() ;
 bool isempty() ;
-bool isfull() ;
 
 int main() {
-	cout << "                    IMPLEMENTATION OF CIRCULAR QUEUE USING ARRAY                    " << endl;
+	cout << "               IMPLEMENTATION OF CIRCULAR QUEUE USING LINKED LIST                   " << endl;
 	cout << "------------------------------------------------------------------------------------" << endl;
 
 	char choice;
@@ -48,7 +49,6 @@ int main() {
 		cout <<" c) Front" 	    << endl;
 		cout <<" d) Display" 	<< endl;
 		cout <<" e) Is empty?" 	<< endl;
-		cout <<" f) Is full?" 	<< endl;
 		cout <<" q) Quit" 		<< endl;
 
 		cout << endl;
@@ -91,12 +91,6 @@ int main() {
 				cout << "Is empty = " << (mty?"yes":"no") << endl;
 				break;
 			}
-			case 'f' :
-			{
-				bool mty = isfull();
-				cout << "Is full = " << (mty?"yes":"no") << endl;
-				break;
-			}
 		}
 		cout<<endl;
 	} while (choice != 'q' or choice == 'Q');
@@ -107,64 +101,65 @@ int main() {
 //Enqueue operation
 bool enqueue(int element) {
 
-	if ( (rear + 1) % qsize == front) {
-		cout << "circular queue full.." << endl;
-		return false;
-	}
+	Node *newnode = new Node;
+	newnode-> data = element;
 
-	if (-1 == front and -1 == rear) {
-		front = rear = 0;
+	if (nullptr == front and nullptr == rear) {
+		front = rear = newnode;
 	}
 	else {
-		rear = (rear + 1) % qsize;
+		rear->next = newnode;
+		rear = newnode;
 	}
-
-	circularQ[rear] = element;
+	rear->next = front;
 	return true;
 }
 
 
 //Dequeue operation
 int  dequeue() {
-	if ( -1 == front and -1 == rear ) {
+	if ( nullptr == front and nullptr == rear ) {
 		cout << "circular queue empty" << endl;
 		return -1;
 	}
 
-	int data = circularQ[front];
+	int data      = front->data;
+	Node *delnode = front;
+
 	if ( front == rear ) {
-		front = rear = -1;
+		front = rear = nullptr;
 	}
 	else {
-		front = (front + 1) % qsize;
+		front = front->next;
+		rear->next = front;
 	}
+	delete delnode;
 return data;
 }
 
 
 //Peek / Front
 int  peek() {
-	if ( -1 == front and -1 == rear ) {
+	if ( nullptr == front and nullptr == rear ) {
 		cout << "circular queue empty" << endl;
 		return -1;
 	}
-return circularQ[front];
+return front->data;
 }
 
 
 
 //Display the circular queue
 void display() {
-	if ( -1 == front and -1 == rear ) {
+	if ( nullptr == front and nullptr == rear ) {
 		cout << "circular queue empty" << endl;
 	}
 	else {
-		cout << "Cirucular Q : qsize = " << qsize << ", front = " << front << ", rear = " << rear << endl;
 		cout << "Cirucular Q : ";
-		for (int i = front; i != rear; i = (i + 1) % qsize) {
-			cout << circularQ[i] << " ";
+		for (Node *curr = front; curr != rear; curr = curr->next) {
+			cout << curr->data << " ";
 		}
-		cout << circularQ[rear] << endl;
+		cout << rear->data << endl;
 	}
 }
 
@@ -172,13 +167,6 @@ void display() {
 
 //Is circular queue empty?
 bool isempty() {
-	return (-1 == front and -1 == rear);
+	return (nullptr == front and nullptr == rear);
 }
 
-
-
-//Is circular queue full?
-
-bool isfull() {
-	return ( (rear +1) % qsize == front );
-}
