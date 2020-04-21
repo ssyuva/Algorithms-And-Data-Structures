@@ -1,16 +1,17 @@
-//Implementation of singly linked list
+//Implementation of doubly linked list
 //Author: Yuvaraja Subramaniam ( www.linkedin.com/in/yuvaraja )
 
 /* Singly linked list:
 
 	Sequential access only data structure. No random access possible.
+	Supports forward iteration as well as reverse iteration.
 	
 	insert_begin()      - O(1)
-    insert_end()        - O(n)
+    insert_end()        - O(1) [ there exists a rear pointer, else this will be O(n) ]
     insert_middlepos()  - O(n/2) = O(n)
 
 	delete_begin()      - O(1)
-    delete_end()        - O(n)
+    delete_end()        - O(1) [ there exists a rear pointer, else this will be O(n) ]
     delete_middlepos()  - O(n/2) = O(n)
 
 	display()           - O(n)
@@ -19,8 +20,7 @@
 	reverse()           - O(n)
 
 	The operations in the end when there is no rear pointer takes O(n) time complexity.
-	This can be reduced to O(1) complexity by keeping additional rear pointers ( need two rear
-	pointers for delete_end() operation ) 
+	This can be reduced to O(1) complexity by keeping additional rear pointers
 
 */
 
@@ -31,6 +31,7 @@ using namespace std;
 
 struct Node {
 	int data;
+	struct Node *prev;
 	struct Node *next;
 };
 
@@ -48,12 +49,11 @@ bool isempty();
 
 
 //reversal methods
-bool reverse_method_A();
-bool reverse_method_B();
-Node * reverse_method_C(Node *list);
+bool reverse_iterative();
 
 
-Node *head;
+Node *head = nullptr;
+Node *tail = nullptr;
 
 
 int main() {
@@ -73,9 +73,7 @@ int main() {
 		cout <<" f) Delete_position"    << endl;
 		cout <<" g) Display"            << endl;
 		cout <<" h) Is empty?"          << endl;
-		cout <<" i) Reverse - single scan (build another list)"   << endl;
-		cout <<" j) Reverse - single scan (inplace pointer swap)" << endl;
-		cout <<" k) Reverse - recursive"                          << endl;
+		cout <<" i) Reverse - single scan (inplace pointer swap)" << endl;
 		cout <<" q) Quit"               << endl;
 
 		cout << endl;
@@ -150,20 +148,8 @@ int main() {
 			}
 			case 'i' :
 			{
-				bool res = reverse_method_A();
-				cout << "Reversed list using method A (single scan, build another reversed list)" << endl;
-				break;
-			}
-			case 'j' :
-			{
-				bool res = reverse_method_B();
-				cout << "Reversed list using method B (insplace pointer swap)" << endl;
-				break;
-			}
-			case 'k' :
-			{
-				head = reverse_method_C( head );
-				cout << "Reversed list using method C (recursive)" << endl;
+				bool res = reverse_iterative();
+				cout << "Reversed list using iterative method (insplace pointer swap)" << endl;
 				break;
 			}
 		}
@@ -179,8 +165,19 @@ bool insert_begin( int item ) {
 	
 	Node *newnode = new Node;
 	newnode->data = item;
-	newnode->next = head;
-	head = newnode;
+
+	if (nullptr == head and nullptr == tail) {
+		head = newnode;
+		tail = newnode;
+		head->prev = nullptr;
+		tail->next = nullptr;
+	}
+	else {
+		newnode->next = head;
+		head->prev    = newnode;
+		newnode->prev = nullptr;
+		head = newnode;
+	}
 	return true;
 }
 
@@ -191,17 +188,18 @@ bool insert_end( int item ) {
 	
 	Node *newnode = new Node;
 	newnode->data = item;
-	newnode->next = nullptr;
 
-	if (nullptr == head) {
+	if (nullptr == head and nullptr == tail) {
 		head = newnode;
-	} 
+		tail = newnode;
+		head->prev = nullptr;
+		tail->next = nullptr;
+	}
 	else {
-		Node *tmp = head;
-		while( nullptr != tmp->next ) {
-			tmp = tmp->next;
-		}
-		tmp->next = newnode;
+		newnode->next = nullptr;
+		newnode->prev = tail;
+		tail->next    = newnode;
+		tail = newnode;
 	}
 return true;
 }
@@ -211,39 +209,61 @@ return true;
 //Insert as a node at particular position
 bool insert_middlepos( int item, int position ) {
 
-	if (nullptr == head and position > 1) {
+	if ( (nullptr == head and position > 1) or (position < 1) ) {
 		cout << "invalid insertion position = " << position << endl;
 		return false;
 	}
-	if ( 1 == position )  {
-		Node *newnode = new Node;
-		newnode->data = item;
-		newnode->next = head;
-		head = newnode;
-		return true;
-	}
 
+	Node *curr     = head;
+	Node *prevnode = head; 
 	int curpos = 1;
-	Node *curr = head;
-	Node *prev = head;
+	
 
-	while ( nullptr != curr and curpos < position ) {
+	while (curr != nullptr and curpos < position) {
 		curpos++;
-		prev = curr;
+		prevnode = curr;
 		curr = curr->next;
 	}
 
-	if (curpos == position) {
+	if (curpos == 1 and position == 1) {
+	
 		Node *newnode = new Node;
 		newnode->data = item;
-		newnode->next = curr;
-		prev->next    = newnode;
-		return true;
+		
+		if (nullptr == head and nullptr == tail) {
+			newnode->prev = nullptr;
+			newnode->next = nullptr;
+			head = tail = newnode;
+		}
+		else {
+			newnode->prev = nullptr;
+			newnode->next = head;
+			head->prev    = newnode;
+			head          = newnode;
+		}
+	}
+	else if (curpos == position) {
+		Node *newnode = new Node;
+		newnode->data = item;
+	
+		if (prevnode == tail) {
+			newnode->next = nullptr;
+			newnode->prev = tail;
+			tail->next    = newnode;
+			tail          = newnode;
+		}
+		else {
+			newnode->next = curr;
+			newnode->prev = prevnode;
+			curr->prev    = newnode;
+			prevnode->next = newnode;
+		}
 	}
 	else {
 		cout << "invalid insertion position = " << position << endl;
 		return false;
 	}
+return true;
 }
 
 
@@ -253,17 +273,22 @@ bool insert_middlepos( int item, int position ) {
 int delete_begin() {
 
 	if (nullptr == head) {
-		cout << "list empty.." << endl;
+		cout << "list empty" << endl;
 		return -1;
 	}
-	else {
-		Node *delnode = head;
-		int  deldata  = delnode->data;
+	Node *delnode = head;
+	int  deldata  = head->data;
 
-		head = head->next;
-		delete delnode;
-		return deldata;
+	if (head == tail) {
+		head = tail = nullptr;
 	}
+	else {
+		head = head->next;
+		head ->prev = nullptr;
+	}
+
+	delete delnode;
+	return deldata;
 }
 
 
@@ -276,30 +301,19 @@ int delete_end() {
 		cout << "list empty.." << endl;
 		return -1;
 	}
-	else if (nullptr == head->next) {
-		Node *delnode = head;
-		int  deldata  = delnode->data;
+	Node *delnode = tail;
+	int  deldata  = tail->data;
 
-		head = head->next;
-		delete delnode;
-		return deldata;
+	if (head == tail) {
+		head = tail = nullptr;
 	}
 	else {
-		Node *curr = head;
-		Node *prev = head;
-
-		while (nullptr != curr->next) {
-			prev = curr;
-			curr = curr->next;		
-		}
-	
-		Node *delnode = curr;
-		int  deldata  = delnode->data;
-
-		prev->next = nullptr;
-		delete delnode;
-		return deldata;
+		tail = tail->prev;
+		tail->next = nullptr;
 	}
+
+	delete delnode;
+	return deldata;
 }
 
 
@@ -309,29 +323,40 @@ int delete_middlepos(int position) {
 		cout << "list empty.." << endl;
 		return -1;
 	}
-	else if ( 1 == position ) {
-		Node *delnode = head;
-		int  deldata  = delnode->data;
-		
-		head = head->next;
-		delete delnode;
-		return deldata;
+
+	if (position < 1) {
+			cout << "invalid deletion position = " << position << endl;
+			return -1;
+	}
+
+	if (1 == position) {
+		return delete_begin();
 	}
 	else {
 		int curpos = 1;
-		Node *curr = head;
-		Node *prev = head;
-		while (nullptr != curr->next and curpos < position) {
+		Node *curr     = head;
+		Node *prevnode = head;
+
+		while (curr != nullptr and curpos < position) {
 			curpos++;
-			prev = curr;
+			prevnode = curr;
 			curr = curr->next;
 		}
-		
-		if (curpos == position) {
-			Node *delnode = curr;
-			int deldata = delnode->data;
 
-			prev->next = delnode->next;
+		if (curpos == position and curr != nullptr) {
+			
+			Node *delnode = curr;
+			int  deldata  = delnode->data;
+
+			prevnode->next = curr->next;
+			if (curr->next != nullptr) {
+				curr->next->prev = prevnode;
+			}
+			else
+			{
+				tail = prevnode;
+			}
+			
 			delete delnode;
 			return deldata;
 		}
@@ -368,25 +393,8 @@ bool isempty() {
 }
 
 
-//Reverse method 1 - Single scan (build another list)
-bool reverse_method_A(){
-
-	Node *revlist = nullptr;
-	Node *tmp = head;
-	while (nullptr != tmp) {
-		Node *nextnode = tmp->next;
-		tmp->next = revlist;
-		revlist   = tmp;
-		tmp = nextnode;
-	}
-head = revlist;
-return true;
-}
-
-
-
-//Reverse method 2 - Single scan (inplace reversal)
-bool reverse_method_B() {
+//Reverse iterative - Single scan (inplace reversal)
+bool reverse_iterative() {
 
 	if (nullptr == head or nullptr == head->next ) {
 		return true;
@@ -398,39 +406,14 @@ bool reverse_method_B() {
 	while (nextnode != nullptr) {
 		nextnode = curr->next;
 		curr->next = prev;
+		if (prev != nullptr) {
+			prev->prev = curr;
+		}
 		prev = curr;
 		curr = nextnode;
 	}
+	tail = head;
 	head = prev;
 return true;
 }
-
-
-//Reverse method 3 - Recursive reversal
-Node * reverse_method_C(Node *head) {
-
-	if ( nullptr == head ) {
-		return head;
-	}
-	if (nullptr == head->next) {
-		return head;
-	}
-
-	Node *curr = head;
-	Node *rest = head->next;
-	Node *reverse_rest = reverse_method_C(rest);
-
-	Node *prev = reverse_rest;
-	Node *tmp  = reverse_rest;
-
-	while (tmp != nullptr) {
-		prev = tmp;
-		tmp = tmp->next;
-	}
-	prev->next = curr;
-	curr->next = nullptr;
-
-	return reverse_rest;	
-}
-
 
