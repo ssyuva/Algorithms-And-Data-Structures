@@ -16,6 +16,8 @@
 	display()           - O(n)
 	isempty()           - O(1)
 
+	reverse()           - O(n)
+
 	The operations in the end when there is no rear pointer takes O(n) time complexity.
 	This can be reduced to O(1) complexity by keeping additional rear pointers ( need two rear
 	pointers for delete_end() operation ) 
@@ -26,6 +28,11 @@
 #include <iostream>
 
 using namespace std;
+
+struct Node {
+	int data;
+	struct Node *next;
+};
 
 //prototypes
 bool insert_begin(int item); 
@@ -39,10 +46,11 @@ int delete_middlepos(int position);
 void display();
 bool isempty();
 
-struct Node {
-	int data;
-	struct Node *next;
-};
+
+//reversal methods
+bool reverse_method_A();
+bool reverse_method_B();
+Node * reverse_method_C(Node *list);
 
 
 Node *head;
@@ -65,6 +73,9 @@ int main() {
 		cout <<" f) Delete_position"    << endl;
 		cout <<" g) Display"            << endl;
 		cout <<" h) Is empty?"          << endl;
+		cout <<" i) Reverse - single scan (build another list)"  << endl;
+		cout <<" j) Reverse - single scan (inplace poiner swap)" << endl;
+		cout <<" k) Reverse - recursive"                         << endl;
 		cout <<" q) Quit"               << endl;
 
 		cout << endl;
@@ -135,6 +146,24 @@ int main() {
 			{
 				bool mty = isempty();
 				cout << "Is empty = " << (mty?"yes":"no") << endl;
+				break;
+			}
+			case 'i' :
+			{
+				bool res = reverse_method_A();
+				cout << "Reversed list using method A (single scan, build another reversed list)" << endl;
+				break;
+			}
+			case 'j' :
+			{
+				bool res = reverse_method_B();
+				cout << "Reversed list using method B (insplace pointer swap)" << endl;
+				break;
+			}
+			case 'k' :
+			{
+				head = reverse_method_C( head );
+				cout << "Reversed list using method C (recursive)" << endl;
 				break;
 			}
 		}
@@ -314,6 +343,7 @@ int delete_middlepos(int position) {
 }
 
 
+
 //Display the linked list
 void display() {
 	cout << "List contents : ";
@@ -331,7 +361,76 @@ void display() {
 }
 
 
+
 //Is empty
 bool isempty() {
 	return nullptr == head;
 }
+
+
+//Reverse method 1 - Single scan (build another list)
+bool reverse_method_A(){
+
+	Node *revlist = nullptr;
+	Node *tmp = head;
+	while (nullptr != tmp) {
+		Node *nextnode = tmp->next;
+		tmp->next = revlist;
+		revlist   = tmp;
+		tmp = nextnode;
+	}
+head = revlist;
+return true;
+}
+
+
+
+//Reverse method 2 - Single scan (inplace reversal)
+bool reverse_method_B() {
+
+	if (nullptr == head or nullptr == head->next ) {
+		return true;
+	}
+
+	Node *prev     = nullptr;
+	Node *curr     = head;
+	Node *nextnode = head;
+	while (nextnode != nullptr) {
+		nextnode = curr->next;
+		curr->next = prev;
+		prev = curr;
+		curr = nextnode;
+	}
+	head = prev;
+return true;
+}
+
+
+//Reverse method 3 - Recursive reversal
+Node * reverse_method_C(Node *head) {
+
+	if ( nullptr == head ) {
+		return head;
+	}
+	if (nullptr == head->next) {
+		return head;
+	}
+
+	Node *curr = head;
+	Node *rest = head->next;
+	Node *reverse_rest = reverse_method_C(rest);
+
+	Node *prev = reverse_rest;
+	Node *tmp  = reverse_rest;
+
+	while (tmp != nullptr) {
+		prev = tmp;
+		tmp = tmp->next;
+	}
+	prev->next = curr;
+	curr->next = nullptr;
+
+	return reverse_rest;	
+}
+
+
