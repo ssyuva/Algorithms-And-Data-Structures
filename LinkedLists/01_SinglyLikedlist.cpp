@@ -182,39 +182,38 @@ return true;
 //Insert as a node at particular position
 bool insert_middlepos( int item, int position ) {
 
-	if ( nullptr == head and 1 == position )  {
-		Node *newnode = new Node;
-		newnode->data = item;
-		newnode->next = nullptr;
-		head = newnode;
-		return true;
-	}
-	else if (nullptr == head and position > 1) {
+	if (nullptr == head and position > 1) {
 		cout << "invalid insertion position = " << position << endl;
 		return false;
 	}
+	if ( 1 == position )  {
+		Node *newnode = new Node;
+		newnode->data = item;
+		newnode->next = head;
+		head = newnode;
+		return true;
+	}
+
+	int curpos = 1;
+	Node *curr = head;
+	Node *prev = head;
+
+	while ( nullptr != curr and curpos < position ) {
+		curpos++;
+		prev = curr;
+		curr = curr->next;
+	}
+
+	if (curpos == position) {
+		Node *newnode = new Node;
+		newnode->data = item;
+		newnode->next = curr;
+		prev->next    = newnode;
+		return true;
+	}
 	else {
-		int curpos = 1;
-		Node *tmp = head;
-		Node *prev = head;
-
-		while ( nullptr != tmp and curpos < position ) {
-			curpos++;
-			prev = tmp;
-			tmp  = tmp->next;
-		}
-
-		if (curpos == position) {
-			Node *newnode = new Node;
-			newnode->data = item;
-			newnode->next = nullptr;
-			prev->next    = newnode;
-			return true;
-		}
-		else {
-			cout << "invalid insertion position = " << position << endl;
-			return false;
-		}
+		cout << "invalid insertion position = " << position << endl;
+		return false;
 	}
 }
 
@@ -225,6 +224,7 @@ bool insert_middlepos( int item, int position ) {
 int delete_begin() {
 
 	if (nullptr == head) {
+		cout << "list empty.." << endl;
 		return -1;
 	}
 	else {
@@ -244,6 +244,7 @@ int delete_begin() {
 int delete_end() {
 
 	if (nullptr == head) {
+		cout << "list empty.." << endl;
 		return -1;
 	}
 	else if (nullptr == head->next) {
@@ -276,6 +277,7 @@ int delete_end() {
 //Delete the node at a middle position
 int delete_middlepos(int position) {
 	if (nullptr == head) {
+		cout << "list empty.." << endl;
 		return -1;
 	}
 	else if ( 1 == position ) {
