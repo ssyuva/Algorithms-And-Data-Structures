@@ -1,5 +1,5 @@
 //Counting Sort Algorithm - Sort based on keys trying to figure out the starting index of every keyset. Comparisonless sorting algorithm
-//Author: Yuvaraja Subramaniam
+//Author: Yuvaraja Subramaniam ( www.linkedin.com/in/yuvaraja )
 
 #include <iostream>
 #include <unistd.h>

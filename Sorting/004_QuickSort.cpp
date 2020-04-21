@@ -1,5 +1,5 @@
 //Quick Sort Algorithm (Inplace Sort) AKA Partition Exchange Sort.
-//Author: Yuvaraja Subramaniam
+//Author: Yuvaraja Subramaniam ( www.linkedin.com/in/yuvaraja )
 
 #include <iostream>
 #include <unistd.h>

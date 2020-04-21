@@ -1,6 +1,5 @@
 //Stack Applications - Conversion from infix expression to prefix expression
-//Author: Yuvaraja Subramaniam
-
+//Author: Yuvaraja Subramaniam ( www.linkedin.com/in/yuvaraja )
 
 #include <iostream>
 #include <string>

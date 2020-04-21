@@ -1,5 +1,5 @@
 //Stack implementation using linked list
-//Author: Yuvaraja Subramaniam
+//Author: Yuvaraja Subramaniam ( www.linkedin.com/in/yuvaraja )
 
 #include <iostream>
 

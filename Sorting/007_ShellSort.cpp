@@ -1,5 +1,5 @@
 //Shell Sort Algorithm
-//Author: Yuvaraja Subramaniam
+//Author: Yuvaraja Subramaniam ( www.linkedin.com/in/yuvaraja )
 
 #include <iostream>
 #include <unistd.h>

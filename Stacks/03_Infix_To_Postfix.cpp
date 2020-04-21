@@ -1,5 +1,5 @@
 //Stack Applications - Conversion from infix expression to postfix expression
-//Author: Yuvaraja Subramaniam
+//Author: Yuvaraja Subramaniam ( www.linkedin.com/in/yuvaraja )
 
 #include <iostream>
 #include <string>

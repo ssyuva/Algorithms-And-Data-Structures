@@ -1,5 +1,5 @@
 //Queues - Implementation using stack
-//Author: Yuvaraja Subramaniam
+//Author: Yuvaraja Subramaniam ( www.linkedin.com/in/yuvaraja )
 
 /* Queue - Abstract data type that has FIFO properties.
    Operations:

@@ -1,5 +1,5 @@
 // Construct a binary expression tree from a binary expression - without using stack
-// Author: Yuvaraja Subramaniam
+//Author: Yuvaraja Subramaniam ( www.linkedin.com/in/yuvaraja )
 
 /*
 	1. Operators will be in only internal nodes.
