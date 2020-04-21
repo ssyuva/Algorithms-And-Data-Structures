@@ -50,6 +50,97 @@ Node *head;
 
 int main() {
 
+	cout << "                                   SINGLY LINKED LIST                               " << endl;
+	cout << "------------------------------------------------------------------------------------" << endl;
+
+	char choice;
+
+	//menu
+	do {
+		cout <<" a) Insert_begin"       << endl;
+		cout <<" b) Insert_end"         << endl;
+		cout <<" c) Insert_position"    << endl;
+		cout <<" d) Delete_begin"       << endl;
+		cout <<" e) Delete_end"         << endl;
+		cout <<" f) Delete_position"    << endl;
+		cout <<" g) Display"            << endl;
+		cout <<" h) Is empty?"          << endl;
+		cout <<" q) Quit"               << endl;
+
+		cout << endl;
+		cout << "Enter choice : ";
+		cin  >> choice;
+
+		switch (choice) {
+			case 'a' :
+			{
+				int element;
+				cout << "Enter element : ";
+				cin >> element;
+				insert_begin(element);
+				break;
+			}
+			case 'b' :
+			{
+				int element;
+				cout << "Enter element : ";
+				cin >> element;
+				insert_end(element);
+				break;
+			}
+			case 'c' :
+			{
+				int element;
+				int pos;
+				cout << "Enter element : ";
+				cin >> element;
+				cout << "Enter insert position (start = 1): ";
+				cin >> pos;
+				insert_middlepos(element, pos);
+				break;
+			}
+			case 'd' :
+			{
+				int element = delete_begin();
+				if (-1 != element) {
+					cout << "deleted begining element = " << element << endl;
+				}
+				break;
+			}
+			case 'e' :
+			{
+				int element = delete_end();
+				if (-1 != element) {
+					cout << "deleted end element = " << element << endl;
+				}
+				break;
+			}
+			case 'f' :
+			{
+				int pos;
+				cout << "Enter delete position (start = 1): ";
+				cin >> pos;
+				int element = delete_middlepos(pos);
+				if (-1 != element) {
+					cout << "deleted element = " << element << endl;
+				}
+				break;
+			}
+			case 'g' :
+			{
+				display();
+				break;
+			}
+			case 'h' :
+			{
+				bool mty = isempty();
+				cout << "Is empty = " << (mty?"yes":"no") << endl;
+				break;
+			}
+		}
+		cout<<endl;
+		//usleep( 1000 * 1000);
+	} while (choice != 'q' or choice == 'Q');
 }
 
 
@@ -73,7 +164,7 @@ bool insert_end( int item ) {
 	newnode->data = item;
 	newnode->next = nullptr;
 
-	if (nullptr = head) {
+	if (nullptr == head) {
 		head = newnode;
 	} 
 	else {
@@ -179,12 +270,12 @@ int delete_end() {
 		delete delnode;
 		return deldata;
 	}
-
+}
 
 
 //Delete the node at a middle position
 int delete_middlepos(int position) {
-	if (nullptr = head) {
+	if (nullptr == head) {
 		return -1;
 	}
 	else if ( 1 == position ) {
