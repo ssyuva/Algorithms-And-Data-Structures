@@ -1,7 +1,7 @@
 //Implementation of doubly linked circular list
 //Author: Yuvaraja Subramaniam ( www.linkedin.com/in/yuvaraja )
 
-/* Singly linked circular list:
+/* Doubly linked circular list:
 
 	Sequential access only data structure. No random access possible. Both forward and reverse iteration possible.
 	
